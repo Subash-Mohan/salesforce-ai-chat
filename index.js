@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+require("dotenv").config();
 const PORT = 3001;
 
 const SalesforceConnection = require("./connections/SalesforceConnection");
@@ -31,6 +32,6 @@ app.get("/", salesforceTest);
 app.get("/chat:message", chat);
 app.get("/getmessages", getMessages);
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
