@@ -44,7 +44,7 @@ const submitToolOutputs = async (result, run) => {
     tool_outputs: [
       {
         tool_call_id: run.required_action.submit_tool_outputs.tool_calls[0].id,
-        output: `These are result ${result}`,
+        output: `These are result ${JSON.stringify(result)}`,
       },
     ],
   });
@@ -54,11 +54,9 @@ const handleChatStatus = async (runStatus) => {
   if (runStatus.status === "completed") {
     salesforceMethod.createPlatformEventRecord();
   } else {
-    const result = await methodManager.executeMethod(
-      "get_namedcredentials",
-      runStatus
-    );
-    console.log("threadId-->" + CircularJSON.stringify(config.threadId));
+    const methodName =
+      runStatus.required_action.submit_tool_outputs.tool_calls[0].function.name;
+    const result = await methodManager.executeMethod(methodName, runStatus);
     const toolOutput = await submitToolOutputs(result, runStatus);
     checkRunStatus(config.threadId, runStatus.id, Date.now())
       .then((finalRunStatus) => {

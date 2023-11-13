@@ -15,16 +15,6 @@ router.get("/chat:message", async (req, res) => {
   const reqMessage = req.params.message;
   console.log(reqMessage);
   helperMethods.setThreadId(threadId);
-  //   const message = await openai.beta.threads.messages.create(threadId, {
-  //     role: "user",
-  //     content: "Give me all the named credentials in the salesforce org",
-  //   });
-  //   console.log("Message-->" + JSON.stringify(message));
-
-  //   const run = await openai.beta.threads.runs.create(threadId, {
-  //     assistant_id: process.env.ASSISTANT_ID,
-  //   });
-  //   console.log("Run-->" + JSON.stringify(run));
   console.log("threadId-->" + threadId);
   const { message, run } = await helperMethods.sendManager(reqMessage);
 

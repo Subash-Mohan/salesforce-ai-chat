@@ -11,25 +11,23 @@ const updateContactStrategy = (request, response) => {
 };
 
 const retrieveApexClass = async (runStatus) => {
-  const { apexClassName } =
+  const { apexClassName } = JSON.parse(
     runStatus.required_action.submit_tool_outputs.tool_calls[0].function
-      .arguments;
-  conn.metadata.read("ApexClass", [apexClassName], function (err, metadata) {
-    if (err) {
-      throw err;
-    }
-    console.log("Apex Class Body:", metadata[0].body);
-    return metadata[0].body;
-  });
+      .arguments
+  );
+  const query = `SELECT Body FROM ApexClass WHERE Name = '${apexClassName}'`;
+  const result = await conn.query(query);
+  console.log("Result retrieveApexClass-->" + JSON.stringify(result));
+  const apexClassBody = result.records[0].Body;
+  console.log("Apex Class Body:", apexClassBody);
+  return apexClassBody;
 };
 
 const getNamedCredentials = async (runStatus) => {
   try {
-    // Query for named credentials
     const query = "SELECT Id, DeveloperName, Endpoint FROM NamedCredential";
     const result = await conn.query(query);
 
-    // Extract relevant information from the query result
     const namedCredentials = result.records.map((record) => {
       return {
         id: record.Id,
@@ -42,6 +40,64 @@ const getNamedCredentials = async (runStatus) => {
   } catch (err) {
     console.error("Error retrieving named credentials:", err);
     throw err;
+  }
+};
+
+const getPermissionSetsAndProfileForUser = async (runStatus) => {
+  const { name } = JSON.parse(
+    runStatus.required_action.submit_tool_outputs.tool_calls[0].function
+      .arguments
+  );
+  try {
+    const query = `
+      SELECT Id, PermissionSetId, PermissionSet.Name, PermissionSet.ProfileId, PermissionSet.Profile.Name, AssigneeId, Assignee.Name
+      FROM PermissionSetAssignment
+      WHERE Assignee.Name = '${name}'
+    `;
+
+    const result = await conn.query(query);
+    console.log(
+      `getPermissionSetsAndProfileForUser-->${JSON.stringify(result)}`
+    );
+    if (result.records && result.records.length > 0) {
+      const permissionSets = result.records.map((record) => ({
+        id: record.Id,
+        permissionSetId: record.PermissionSetId,
+        permissionSetName: record.PermissionSet.Name,
+        profileId: record.PermissionSet.ProfileId,
+        profileName:
+          record.PermissionSet.Profile != null
+            ? record.PermissionSet.Profile.Name
+            : null,
+        assigneeId: record.AssigneeId,
+        assigneeName: record.Assignee.Name,
+      }));
+
+      return permissionSets;
+    } else {
+      return "Profile Record not found";
+    }
+  } catch (error) {
+    console.error(error);
+    return "Failed to retrieve Permission Sets for the user";
+  }
+};
+
+const getOrganizationId = async () => {
+  try {
+    const query = "SELECT Id, Name FROM Organization";
+    const result = await conn.query(query);
+
+    if (result.records && result.records.length > 0) {
+      const organizationId = result.records[0].Id;
+      const name = result.records[0].Name;
+      return `Id: ${organizationId}, OrgName: ${name}`;
+    } else {
+      return "Organization record not found";
+    }
+  } catch (error) {
+    console.error(error);
+    return "Failed to retrieve Organization ID";
   }
 };
 
@@ -65,4 +121,7 @@ module.exports = {
   updateContactStrategy,
   getNamedCredentials,
   createPlatformEventRecord,
+  retrieveApexClass,
+  getPermissionSetsAndProfileForUser,
+  getOrganizationId,
 };

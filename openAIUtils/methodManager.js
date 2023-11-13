@@ -3,6 +3,10 @@ const methods = {
   "create-account": salesforceMethod.createAccountStrategy,
   "update-contact": salesforceMethod.updateContactStrategy,
   get_namedcredentials: salesforceMethod.getNamedCredentials,
+  get_apexClassContent: salesforceMethod.retrieveApexClass,
+  get_PermissionSetsAndProfileForUser:
+    salesforceMethod.getPermissionSetsAndProfileForUser,
+  get_orgID: salesforceMethod.getOrganizationId,
 };
 
 const executeMethod = async (methodKey, runStatus) => {
