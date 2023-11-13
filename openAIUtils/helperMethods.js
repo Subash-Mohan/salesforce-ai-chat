@@ -52,8 +52,9 @@ const submitToolOutputs = async (result, run) => {
 
 const handleChatStatus = async (runStatus) => {
   if (runStatus.status === "completed") {
-    salesforceMethod.createPlatformEventRecord();
+    salesforceMethod.createPlatformEventRecord("completed");
   } else {
+    salesforceMethod.createPlatformEventRecord("function");
     const methodName =
       runStatus.required_action.submit_tool_outputs.tool_calls[0].function.name;
     const result = await methodManager.executeMethod(methodName, runStatus);
@@ -61,9 +62,10 @@ const handleChatStatus = async (runStatus) => {
     checkRunStatus(config.threadId, runStatus.id, Date.now())
       .then((finalRunStatus) => {
         console.log("Final Run Status:", JSON.stringify(finalRunStatus));
-        salesforceMethod.createPlatformEventRecord();
+        salesforceMethod.createPlatformEventRecord("completed");
       })
       .catch((error) => {
+        salesforceMethod.createPlatformEventRecord("error");
         console.error("Error:", error);
       });
   }

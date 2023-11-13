@@ -15,12 +15,16 @@ const retrieveApexClass = async (runStatus) => {
     runStatus.required_action.submit_tool_outputs.tool_calls[0].function
       .arguments
   );
-  const query = `SELECT Body FROM ApexClass WHERE Name = '${apexClassName}'`;
-  const result = await conn.query(query);
-  console.log("Result retrieveApexClass-->" + JSON.stringify(result));
-  const apexClassBody = result.records[0].Body;
-  console.log("Apex Class Body:", apexClassBody);
-  return apexClassBody;
+  try {
+    const query = `SELECT Body FROM ApexClass WHERE Name = '${apexClassName}'`;
+    const result = await conn.query(query);
+    console.log("Result retrieveApexClass-->" + JSON.stringify(result));
+    const apexClassBody = result.records[0].Body;
+    console.log("Apex Class Body:", apexClassBody);
+    return apexClassBody;
+  } catch (err) {
+    console.log("Error retrieving retrieveApexClass:" + err);
+  }
 };
 
 const getNamedCredentials = async (runStatus) => {
@@ -38,7 +42,7 @@ const getNamedCredentials = async (runStatus) => {
 
     return namedCredentials;
   } catch (err) {
-    console.error("Error retrieving named credentials:", err);
+    console.error("Error retrieving named credentials:" + err);
     throw err;
   }
 };
@@ -101,8 +105,8 @@ const getOrganizationId = async () => {
   }
 };
 
-const createPlatformEventRecord = () => {
-  const payload = {};
+const createPlatformEventRecord = (eventType) => {
+  const payload = { Event_Type__c: eventType };
   conn.sobject("open_integration__e").create(payload, function (err, ret) {
     if (err || !ret.success) {
       console.log(
