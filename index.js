@@ -10,6 +10,7 @@ const salesforceConnection = new SalesforceConnection();
 const salesforceTest = require("./routers/salesforceTest");
 const chat = require("./routers/chat");
 const getMessages = require("./routers/getMessages");
+const createThread = require("./routers/createThread");
 
 app.use(
   cors({
@@ -31,6 +32,7 @@ app.use(async (req, res, next) => {
 app.get("/", salesforceTest);
 app.get("/chat:message", chat);
 app.get("/getmessages", getMessages);
+app.get("/createthread", createThread);
 
 app.listen(process.env.PORT || PORT, () => {
   console.log(`Server is running on port ${PORT}`);
