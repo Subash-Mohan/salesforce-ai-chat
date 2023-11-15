@@ -117,16 +117,18 @@ const createObject = async (runStatus) => {
     ];
     conn.metadata.create("CustomObject", metadata, (err, results) => {
       if (err) {
-        console.error(err);
+        console.log(`Error::CustomObject ${err}`);
         return "There is an error in creating the object";
       }
       // for (let i = 0; i < results.length; i++) {
       //   const result = results[i];
       //   console.log("Result: " + result);
       // }
+      console.log(`Object Successfully created `);
       return "Object Successfully created ";
     });
   } catch (err) {
+    console.log(`There is an error in creating the object ${err}`);
     return `There is an error in creating the object ${err}`;
   }
 };
