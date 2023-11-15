@@ -13,7 +13,7 @@ router.post("/chat", async (req, res) => {
   //const thread = await openai.beta.threads.create();
   const threadId = process.env.THREAD_ID;
   const reqMessage = req.body;
-  console.log(req);
+  //console.log(req);
   console.log(reqMessage);
   res.json({
     totalSize: "1",
@@ -21,7 +21,7 @@ router.post("/chat", async (req, res) => {
     ThreadId: threadId,
   });
 
-  /*helperMethods.setThreadId(threadId);
+  helperMethods.setThreadId(threadId);
   console.log("threadId-->" + threadId);
   const { message, run } = await helperMethods.sendManager(reqMessage);
 
@@ -37,7 +37,7 @@ router.post("/chat", async (req, res) => {
     totalSize: "1",
     records: "success",
     ThreadId: threadId,
-  });*/
+  });
 });
 
 module.exports = router;
