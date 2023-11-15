@@ -15,12 +15,6 @@ router.post("/chat", async (req, res) => {
   const reqMessage = req.body.data;
   //console.log(req);
   console.log(reqMessage);
-  res.json({
-    totalSize: "1",
-    records: "success",
-    ThreadId: threadId,
-  });
-
   helperMethods.setThreadId(threadId);
   console.log("threadId-->" + threadId);
   const { message, run } = await helperMethods.sendManager(reqMessage);
