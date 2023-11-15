@@ -120,10 +120,10 @@ const createObject = async (runStatus) => {
         console.error(err);
         return "There is an error in creating the object";
       }
-      for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        console.log("Result: " + result);
-      }
+      // for (let i = 0; i < results.length; i++) {
+      //   const result = results[i];
+      //   console.log("Result: " + result);
+      // }
       return "Object Successfully created ";
     });
   } catch (err) {
