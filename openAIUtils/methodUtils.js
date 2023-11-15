@@ -122,8 +122,7 @@ const createObject = async (runStatus) => {
       }
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        console.log("Success: " + result.success);
-        console.log("Full Name: " + result.fullName);
+        console.log("Result: " + result);
       }
       return "Object Successfully created ";
     });
