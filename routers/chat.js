@@ -12,7 +12,7 @@ const helperMethods = require("../openAIUtils/helperMethods");
 router.post("/chat", async (req, res) => {
   //const thread = await openai.beta.threads.create();
   const threadId = process.env.THREAD_ID;
-  const reqMessage = req.body;
+  const reqMessage = req.body.data;
   //console.log(req);
   console.log(reqMessage);
   res.json({
