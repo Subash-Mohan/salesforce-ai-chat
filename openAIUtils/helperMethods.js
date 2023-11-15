@@ -41,12 +41,7 @@ const submitToolOutputs = async (result, run) => {
   console.log(result);
   console.log(String(result));
   openai.beta.threads.runs.submitToolOutputs(config.threadId, run.id, {
-    tool_outputs: [
-      {
-        tool_call_id: run.required_action.submit_tool_outputs.tool_calls[0].id,
-        output: `These are result ${JSON.stringify(result)}`,
-      },
-    ],
+    tool_outputs: result,
   });
 };
 
@@ -55,19 +50,35 @@ const handleChatStatus = async (runStatus) => {
     salesforceMethod.createPlatformEventRecord("completed");
   } else {
     salesforceMethod.createPlatformEventRecord("function");
-    const methodName =
-      runStatus.required_action.submit_tool_outputs.tool_calls[0].function.name;
-    const result = await methodManager.executeMethod(methodName, runStatus);
-    const toolOutput = await submitToolOutputs(result, runStatus);
-    checkRunStatus(config.threadId, runStatus.id, Date.now())
-      .then((finalRunStatus) => {
-        console.log("Final Run Status:", JSON.stringify(finalRunStatus));
-        salesforceMethod.createPlatformEventRecord("completed");
-      })
-      .catch((error) => {
-        salesforceMethod.createPlatformEventRecord("error");
-        console.error("Error:", error);
-      });
+
+    let toolCalls = runStatus.required_action.submit_tool_outputs.tool_calls;
+    let toolOutputs = [];
+    for (let i = 0; i < toolCalls.length; i++) {
+      const methodName = toolCalls[i].function.name;
+      const result = await methodManager.executeMethod(methodName, runStatus);
+      const output = {
+        tool_call_id: toolCalls[i].id,
+        output: `These are result ${JSON.stringify(result)}`,
+      };
+      toolOutputs.push(output);
+    }
+
+    // const methodName = toolCalls[0].function.name;
+    // const result = await methodManager.executeMethod(methodName, runStatus);
+
+    if (toolOutputs.length > 0) {
+      const toolOutput = await submitToolOutputs(toolOutputs, runStatus);
+      checkRunStatus(config.threadId, runStatus.id, Date.now())
+        .then((finalRunStatus) => {
+          console.log("Final Run Status:", JSON.stringify(finalRunStatus));
+          salesforceMethod.createPlatformEventRecord("completed");
+        })
+        .catch((error) => {
+          salesforceMethod.createPlatformEventRecord("error");
+          console.error("Error:", error);
+        });
+    }
+    salesforceMethod.createPlatformEventRecord("completed");
   }
 };
 
