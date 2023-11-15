@@ -9,7 +9,7 @@ const openai = OpenAI.getInstance();
 
 const helperMethods = require("../openAIUtils/helperMethods");
 
-router.get("/chat", async (req, res) => {
+router.post("/chat", async (req, res) => {
   //const thread = await openai.beta.threads.create();
   const threadId = process.env.THREAD_ID;
   const reqMessage = req.body;

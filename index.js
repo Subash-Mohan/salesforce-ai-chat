@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const app = express();
 require("dotenv").config();
 const PORT = 3001;
@@ -29,8 +30,10 @@ app.use(async (req, res, next) => {
   }
 });
 
+app.use(bodyParser.json());
+
 app.get("/", salesforceTest);
-app.get("/chat", chat);
+app.post("/chat", chat);
 app.get("/getmessages", getMessages);
 app.get("/createthread", createThread);
 
