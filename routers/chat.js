@@ -13,7 +13,7 @@ router.post("/chat", async (req, res) => {
   //const thread = await openai.beta.threads.create();
   const threadId = process.env.THREAD_ID;
   const reqMessage = req.body;
-  console.log("body-->" + JSON.stringify(reqMessage));
+  console.log("body-->" + JSON.stringify(req));
   console.log(reqMessage);
   res.json({
     totalSize: "1",
