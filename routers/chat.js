@@ -20,7 +20,8 @@ router.post("/chat", async (req, res) => {
     records: "success",
     ThreadId: threadId,
   });
-  helperMethods.setThreadId(threadId);
+
+  /*helperMethods.setThreadId(threadId);
   console.log("threadId-->" + threadId);
   const { message, run } = await helperMethods.sendManager(reqMessage);
 
@@ -36,7 +37,7 @@ router.post("/chat", async (req, res) => {
     totalSize: "1",
     records: "success",
     ThreadId: threadId,
-  });
+  });*/
 });
 
 module.exports = router;

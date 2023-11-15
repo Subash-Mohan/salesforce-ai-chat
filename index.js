@@ -13,12 +13,14 @@ const chat = require("./routers/chat");
 const getMessages = require("./routers/getMessages");
 const createThread = require("./routers/createThread");
 
-app.use(
-  cors({
-    origin: "https://adaptiq-a4-dev-ed.develop.lightning.force.com", // Replace with your Salesforce instance URL
-    optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://adaptiq-a4-dev-ed.develop.lightning.force.com", // Replace with your Salesforce instance URL
+//     optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+//   })
+// );
+
+app.use(cors());
 app.use(async (req, res, next) => {
   try {
     const userInfo = await salesforceConnection.connect();
@@ -30,7 +32,7 @@ app.use(async (req, res, next) => {
   }
 });
 
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", salesforceTest);
 app.post("/chat", chat);
