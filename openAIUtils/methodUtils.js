@@ -105,6 +105,10 @@ const getOrganizationId = async () => {
   }
 };
 
+const updateNamedCredentials = () => {
+  createPlatformEventRecord("update");
+  return "Named credentials updated";
+};
 const createPlatformEventRecord = (eventType) => {
   const payload = { Event_Type__c: eventType };
   conn.sobject("open_integration__e").create(payload, function (err, ret) {
@@ -128,4 +132,5 @@ module.exports = {
   retrieveApexClass,
   getPermissionSetsAndProfileForUser,
   getOrganizationId,
+  updateNamedCredentials,
 };
