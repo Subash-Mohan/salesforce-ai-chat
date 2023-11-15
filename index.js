@@ -30,7 +30,7 @@ app.use(async (req, res, next) => {
 });
 
 app.get("/", salesforceTest);
-app.get("/chat:message", chat);
+app.get("/chat", chat);
 app.get("/getmessages", getMessages);
 app.get("/createthread", createThread);
 
