@@ -8,6 +8,7 @@ const methods = {
     salesforceMethod.getPermissionSetsAndProfileForUser,
   get_orgID: salesforceMethod.getOrganizationId,
   update_namedCredentials: salesforceMethod.updateNamedCredentials,
+  create_Object: salesforceMethod.createObject,
 };
 
 const executeMethod = async (methodKey, runStatus) => {

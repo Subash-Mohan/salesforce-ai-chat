@@ -11,10 +11,7 @@ const updateContactStrategy = (request, response) => {
 };
 
 const retrieveApexClass = async (runStatus) => {
-  const { apexClassName } = JSON.parse(
-    runStatus.required_action.submit_tool_outputs.tool_calls[0].function
-      .arguments
-  );
+  const { apexClassName } = JSON.parse(runStatus.function.arguments);
   try {
     const query = `SELECT Body FROM ApexClass WHERE Name = '${apexClassName}'`;
     const result = await conn.query(query);
@@ -48,10 +45,7 @@ const getNamedCredentials = async (runStatus) => {
 };
 
 const getPermissionSetsAndProfileForUser = async (runStatus) => {
-  const { name } = JSON.parse(
-    runStatus.required_action.submit_tool_outputs.tool_calls[0].function
-      .arguments
-  );
+  const { name } = JSON.parse(runStatus.function.arguments);
   try {
     const query = `
       SELECT Id, PermissionSetId, PermissionSet.Name, PermissionSet.ProfileId, PermissionSet.Profile.Name, AssigneeId, Assignee.Name
@@ -105,6 +99,39 @@ const getOrganizationId = async () => {
   }
 };
 
+const createObject = async (runStatus) => {
+  try {
+    const { ObjectName } = JSON.parse(runStatus.function.arguments);
+    const metadata = [
+      {
+        fullName: `${ObjectName}__c`,
+        label: ObjectName,
+        pluralLabel: ObjectName,
+        nameField: {
+          type: "Text",
+          label: `${ObjectName} Name`,
+        },
+        deploymentStatus: "Deployed",
+        sharingModel: "ReadWrite",
+      },
+    ];
+    conn.metadata.create("CustomObject", metadata, (err, results) => {
+      if (err) {
+        console.error(err);
+        return "There is an error in creating the object";
+      }
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        console.log("Success: " + result.success);
+        console.log("Full Name: " + result.fullName);
+      }
+      return "Object Successfully created ";
+    });
+  } catch (err) {
+    return `There is an error in creating the object ${err}`;
+  }
+};
+
 const updateNamedCredentials = () => {
   createPlatformEventRecord("update");
   return "Named credentials updated";
@@ -133,4 +160,5 @@ module.exports = {
   getPermissionSetsAndProfileForUser,
   getOrganizationId,
   updateNamedCredentials,
+  createObject,
 };

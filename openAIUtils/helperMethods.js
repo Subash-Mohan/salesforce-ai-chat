@@ -55,7 +55,10 @@ const handleChatStatus = async (runStatus) => {
     let toolOutputs = [];
     for (let i = 0; i < toolCalls.length; i++) {
       const methodName = toolCalls[i].function.name;
-      const result = await methodManager.executeMethod(methodName, runStatus);
+      const result = await methodManager.executeMethod(
+        methodName,
+        toolCalls[i]
+      );
       const output = {
         tool_call_id: toolCalls[i].id,
         output: `These are result ${JSON.stringify(result)}`,
