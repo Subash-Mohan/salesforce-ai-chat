@@ -6,10 +6,15 @@ const router = express.Router();
 
 router.get("/cancelrun/:runId", async (req, res) => {
   const runId = req.params.runId;
-  const run = await openai.beta.threads.runs.cancel(
-    process.env.THREAD_ID,
-    runId
-  );
+  try {
+    const run = await openai.beta.threads.runs.cancel(
+      process.env.THREAD_ID,
+      runId
+    );
+    res.json({ status: "canceled" });
+  } catch (err) {
+    res.json({ status: JSON.stringify(err) });
+  }
 });
 
 module.exports = router;
