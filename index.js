@@ -11,6 +11,7 @@ const salesforceTest = require("./routers/salesforceTest");
 const chat = require("./routers/chat");
 const getMessages = require("./routers/getMessages");
 const createThread = require("./routers/createThread");
+const cancelrun = require("./routers/cancelRun");
 
 // app.use(
 //   cors({
@@ -38,6 +39,7 @@ app.get("/", salesforceTest);
 app.post("/chat", chat);
 app.get("/getmessages", getMessages);
 app.get("/createthread", createThread);
+app.get("/cancelrun/:runId", cancelrun);
 
 app.listen(process.env.PORT || PORT, () => {
   console.log(`Server is running on port ${PORT}`);
