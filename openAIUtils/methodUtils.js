@@ -99,37 +99,41 @@ const getOrganizationId = async () => {
   }
 };
 
-const createObject = async (runStatus) => {
-  try {
-    const { ObjectName } = JSON.parse(runStatus.function.arguments);
-    const metadata = [
-      {
-        fullName: `${ObjectName}__c`,
-        label: ObjectName,
-        pluralLabel: ObjectName,
-        nameField: {
-          type: "Text",
-          label: `${ObjectName} Name`,
-        },
-        deploymentStatus: "Deployed",
-        sharingModel: "ReadWrite",
-      },
-    ];
-    await conn.metadata.create("CustomObject", metadata, (err, results) => {
+const createCustomObject = async (metadata) => {
+  return new Promise((resolve, reject) => {
+    conn.metadata.create("CustomObject", metadata, (err, results) => {
       if (err) {
         console.log(`Error::CustomObject ${err}`);
-        return "There is an error in creating the object";
+        reject("There is an error in creating the object");
+      } else {
+        console.log(`Object Successfully created`);
+        resolve("Object Successfully created");
       }
-      // for (let i = 0; i < results.length; i++) {
-      //   const result = results[i];
-      //   console.log("Result: " + result);
-      // }
-      console.log(`Object Successfully created `);
-      return "Object Successfully created ";
     });
-  } catch (err) {
-    console.log(`There is an error in creating the object ${err}`);
-    return `There is an error in creating the object ${err}`;
+  });
+};
+
+const createObject = async (runStatus) => {
+  const { ObjectName } = JSON.parse(runStatus.function.arguments);
+  const metadata = [
+    {
+      fullName: `${ObjectName}__c`,
+      label: ObjectName,
+      pluralLabel: ObjectName,
+      nameField: {
+        type: "Text",
+        label: `${ObjectName} Name`,
+      },
+      deploymentStatus: "Deployed",
+      sharingModel: "ReadWrite",
+    },
+  ];
+  try {
+    let result = await createCustomObject(metadata);
+    return result;
+  } catch (error) {
+    console.error(error);
+    return error;
   }
 };
 
