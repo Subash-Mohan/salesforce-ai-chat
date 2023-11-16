@@ -115,7 +115,7 @@ const createObject = async (runStatus) => {
         sharingModel: "ReadWrite",
       },
     ];
-    conn.metadata.create("CustomObject", metadata, (err, results) => {
+    await conn.metadata.create("CustomObject", metadata, (err, results) => {
       if (err) {
         console.log(`Error::CustomObject ${err}`);
         return "There is an error in creating the object";
